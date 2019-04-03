@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lyy.secondhand.mapper.StarMapper">
+
+    <select id="selectStarByOpenIdNProductId" resultType="Integer">
+      select count(*) from `star` where  `open_id`=#{openId} and `product_id`=#{productId} and `status`=1
+    </select>
+
+</mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lyy.secondhand.mapper.ProductMapper">
+    <resultMap id="selectProductListResultMap" autoMapping="false" type="com.lyy.secondhand.entity.ProductEntity">
+        <result column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="location" property="location" />
+        <result column="price" property="price"/>
+        <result column="cover_img_name" property="coverFileName" />
+
+        <association property="userEntity" select="com.lyy.secondhand.mapper.UserMapper.selectByOpenId" column="open_id"></association>
+    </resultMap>
+
+    <resultMap id="selectItemByIdResultMap" autoMapping="false" type="com.lyy.secondhand.dto.ProductItem">
+        <result column="avatar_url" property="avatarUrl"/>
+        <result column="name" property="name"/>
+        <result column="id" property="productId"/>
+        <result column="title" property="title"/>
+        <result column="location" property="location"/>
+        <result column="price" property="price"/>
+        <result column="detail" property="detail"/>
+
+        <association property="imgUrlList" select="com.lyy.secondhand.mapper.ImageMapper.selectByProductId" column="id"></association>
+        <association property="ifStar" select="com.lyy.secondhand.mapper.StarMapper.selectStarByOpenIdNProductId" column="{openId=open_id,productId=id}"></association>
+    </resultMap>
+
+    <insert id="insertProduct" parameterType="com.lyy.secondhand.entity.ProductEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into `product`(`title`,`open_id`,`location`,`category`,`brand`,`status`,`cover_img_name`,`price`,`detail`,`create_time`,`update_time`)
+        values (#{title},#{userEntity.openId},#{location},#{category},#{brand},#{status},#{coverFileName},#{price},#{detail},#{createTime},#{updateTime})
+    </insert>
+
+    <select id="selectByCatBnd" resultMap="selectProductListResultMap">
+        select * from `product` where `category`=#{category} and `brand`=#{brand} and `status`= 0
+    </select>
+
+    <select id="selectByCat" resultMap="selectProductListResultMap">
+        select * from `product` where `category`=#{category} and `status`=0
+    </select>
+
+    <select id="selectItemById" resultMap="selectItemByIdResultMap">
+        SELECT u.avatar_url,u.`name`,p.id,p.title,p.location,p.price,p.detail,p.open_id from `user` u,product p WHERE	p.`status`=0 and p.open_id = u.open_id and p.id = #{productId}
+    </select>
+
+
+</mapper>

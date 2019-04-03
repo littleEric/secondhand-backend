@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lyy.secondhand.mapper.ImageMapper">
+    <resultMap id="selectByProductIdResult" autoMapping="false" type="com.lyy.secondhand.entity.ImageEntity">
+        <result column="img_url" property="imgUrl" />
+    </resultMap>
+
+    <insert id="insertImages" parameterType="java.util.List">
+        insert  into  img(product_id,img_url,create_time,update_time) values
+          <foreach collection="list" item="imgEntity" index="index" separator=",">
+              (#{imgEntity.productId},#{imgEntity.imgUrl},#{imgEntity.createTime},#{imgEntity.updateTime})
+          </foreach>
+    </insert>
+
+    <select id="selectByProductId" resultMap="selectByProductIdResult">
+        select `img_url` from `img` where `product_id`=#{productid}
+    </select>
+
+
+</mapper>

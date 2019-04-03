@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lyy.secondhand.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.lyy.secondhand.entity.UserEntity">
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="avatar_url" property="avatarUrl" />
+        <result column="open_id" property="openId" />
+        <result column="gender" property="gender" />
+        <result column="_language" property="language" />
+        <result column="province" property="province" />
+        <result column="city" property="city" />
+        <result column="country" property="country" />
+        <result column="create_time" property="createTime" javaType="java.sql.Timestamp"/>
+        <result column="update_time" property="updateTime" javaType="java.sql.Timestamp"/>
+    </resultMap>
+
+    <select id="selectOneByOpenId" resultType="Integer">
+        SELECT count(*) from `user` WHERE `open_id` = #{openid};
+    </select>
+
+    <select id="selectByOpenId" resultType="com.lyy.secondhand.entity.UserEntity">
+        SELECT * FROM `user` WHERE `open_id` = #{openid};
+    </select>
+
+    <insert id="insertUser" parameterType="com.lyy.secondhand.entity.UserEntity">
+        insert into `user`(`name`,`avatar_url`,`open_id`,`gender`,`province`,`city`,`country`,`_language`,`create_time`,`update_time`)
+        values (#{name},#{avatarUrl},#{openId},#{gender},#{province},#{city},#{country},#{language},#{createTime},#{updateTime})
+    </insert>
+
+</mapper>
