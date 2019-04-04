@@ -17,6 +17,7 @@ public class ProductItem {
     private Integer location;
     private Integer price;
     private String detail;
+    private String coverUrl;
     private List<ImageEntity> imgUrlList;
     private Integer ifStar;
 
@@ -90,6 +91,14 @@ public class ProductItem {
 
     public void setIfStar(Integer ifStar) {
         this.ifStar = ifStar;
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
     }
 
     @Override

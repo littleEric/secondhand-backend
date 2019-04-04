@@ -19,6 +19,7 @@
         <result column="location" property="location"/>
         <result column="price" property="price"/>
         <result column="detail" property="detail"/>
+        <result column="cover_img_name" property="coverUrl"/>
 
         <association property="imgUrlList" select="com.lyy.secondhand.mapper.ImageMapper.selectByProductId" column="id"></association>
         <association property="ifStar" select="com.lyy.secondhand.mapper.StarMapper.selectStarByOpenIdNProductId" column="{openId=open_id,productId=id}"></association>
@@ -38,7 +39,7 @@
     </select>
 
     <select id="selectItemById" resultMap="selectItemByIdResultMap">
-        SELECT u.avatar_url,u.`name`,p.id,p.title,p.location,p.price,p.detail,p.open_id from `user` u,product p WHERE	p.`status`=0 and p.open_id = u.open_id and p.id = #{productId}
+        SELECT u.avatar_url,u.`name`,p.id,p.title,p.location,p.price,p.detail,p.cover_img_name,p.open_id from `user` u,product p WHERE	p.`status`=0 and p.open_id = u.open_id and p.id = #{productId}
     </select>
 
 

@@ -26,6 +26,38 @@ public class EntityUtil {
         return flag;
     }
 
+    //判断实体类空属性,带白名单
+    public static boolean isFieldNullByList(Object object, Set<String> whiteList) throws IllegalAccessException {
+        Class clazz= (Class) object.getClass();//得到类对象
+        Field[] fields = clazz.getDeclaredFields();//得到属性集合
+        boolean flag = false;
+        for (Field field: fields){
+            field.setAccessible(true); //设置属性可访问，私有也可访问
+            String fieldName = field.getName();
+            if(whiteList.contains(fieldName)){      //如果属性名在白名单中，跳出本次循环
+                break;
+            }
+            Object value = field.get(object);//得到属性值
+            if (value == null){
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+
+    //过滤敏感字段，传入set
+    public static void fieldFilter(Object object,Set<String> whiteList) throws IllegalAccessException{
+        Class clazz = (Class) object.getClass();
+        Field[] fields = clazz.getDeclaredFields();     //获取属性集合
+        for (Field field:fields){
+            field.setAccessible(true);      //设置属性可访问
+            if (whiteList.contains(field.getName())){
+                field.set(object,null);
+            }
+        }
+    }
+
     //去除首页商品项敏感数据
     public static void filterProductItem(Object object) throws IllegalAccessException{
         Set<String> filterField = new HashSet<String>()
