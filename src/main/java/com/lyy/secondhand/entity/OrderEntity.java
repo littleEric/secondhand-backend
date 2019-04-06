@@ -9,12 +9,14 @@ import com.baomidou.mybatisplus.annotation.TableName;
  * @Description:
  * @Date: 2019/4/5
  */
-@TableName(value = "order")
+@TableName(value = "_order")
 public class OrderEntity extends BaseEntity {
     @TableId(type = IdType.AUTO)
     private Long id;
     private Long productId;
     private String buyerOpenId;
+
+
     private Integer status;
     private Long addressId;
 

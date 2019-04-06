@@ -58,7 +58,6 @@ public class OrderController {
     @AuthToken
     public ResponseV0<String> addOrder(@RequestBody OrderEntity orderEntity, HttpServletRequest request){
         String token = request.getHeader("token");
-        System.out.println(orderEntity.toString());
         return orderService.addOrder(orderEntity,token);
     }
 }

@@ -18,7 +18,9 @@ public enum ResponseStrEnum {
     ADDRESS_ADD_SUCCESS("添加地址成功"),
     ADDRESS_ADD_FAILED("添加地址失败"),
     ADD_ORDER_SUCCESS("添加订单成功"),
-    ADD_ORDER_FAILED("添加订单失败");
+    ADD_ORDER_FAILED("添加订单失败"),
+    UNPUBLISHED_SUCCESS("取消发布成功"),
+    UNPUBLISHED_FAILD("取消发布失败");
 
     private final String type;
 

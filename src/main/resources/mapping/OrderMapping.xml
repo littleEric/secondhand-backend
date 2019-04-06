@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lyy.secondhand.mapper.OrderMapper">
     <insert id="insertOrder" parameterType="com.lyy.secondhand.entity.OrderEntity" keyColumn="id">
-      insert into `order`(`product_id`,`buyer_open_id`,`status`,`address_id`,`create_time`,`update_time`)
+      insert into `_order`(`product_id`,`buyer_open_id`,`status`,`address_id`,`create_time`,`update_time`)
       values (#{productId},#{buyerOpenId},#{status},#{addressId},#{createTime},#{updateTime})
     </insert>
 </mapper>

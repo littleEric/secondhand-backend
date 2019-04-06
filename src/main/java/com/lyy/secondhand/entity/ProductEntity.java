@@ -24,6 +24,9 @@ public class ProductEntity extends BaseEntity {
     private String title;
     private String category;
     private String brand;
+    private String openId;
+
+    @TableField(exist = false)
     private UserEntity userEntity;
     private Byte status;
 
@@ -105,5 +108,30 @@ public class ProductEntity extends BaseEntity {
 
     public void setUserEntity(UserEntity userEntity) {
         this.userEntity = userEntity;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductEntity{" +
+                "id=" + id +
+                ", coverFileName='" + coverFileName + '\'' +
+                ", price=" + price +
+                ", location='" + location + '\'' +
+                ", detail='" + detail + '\'' +
+                ", title='" + title + '\'' +
+                ", category='" + category + '\'' +
+                ", brand='" + brand + '\'' +
+                ", openId='" + openId + '\'' +
+                ", userEntity=" + userEntity +
+                ", status=" + status +
+                '}';
     }
 }

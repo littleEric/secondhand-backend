@@ -41,7 +41,7 @@ public class AuthTokenInterceptor implements HandlerInterceptor {
             if (token == null){
                 throw new TokenErrorException("非法访问");
             }
-            if (redisUtil.getExpire(token) == new Long(-2)){       //过期时间小于5s
+            if (redisUtil.getExpire(token) == -2){       //过期时间小于5s
                 throw new TokenErrorException("token不存在");
             }
         }

@@ -2,18 +2,13 @@ package com.lyy.secondhand.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lyy.secondhand.common.EntityUtil;
 import com.lyy.secondhand.common.RedisUtil;
 import com.lyy.secondhand.common.ResponseStrEnum;
 import com.lyy.secondhand.common.ResponseV0;
-import com.lyy.secondhand.entity.AddressEntity;
-import com.lyy.secondhand.entity.DomAreaEntity;
-import com.lyy.secondhand.entity.LocationEntity;
-import com.lyy.secondhand.entity.OrderEntity;
-import com.lyy.secondhand.mapper.AddressMapper;
-import com.lyy.secondhand.mapper.DomAreaMapper;
-import com.lyy.secondhand.mapper.LocationMapper;
-import com.lyy.secondhand.mapper.OrderMapper;
+import com.lyy.secondhand.entity.*;
+import com.lyy.secondhand.mapper.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +42,9 @@ public class OrderService {
 
     @Autowired
     OrderMapper orderMapper;
+
+    @Autowired
+    ProductMapper productMapper;
 
     public ResponseV0<String> addAddress(JSONObject jsonObject, String token){
         String location = jsonObject.getString("location");
@@ -130,6 +128,13 @@ public class OrderService {
         }
         if (orderMapper.insertOrder(orderEntity) > 1){
             logger.error("OrderService::addOrder::insert--->{}"," > 1");
+            return new ResponseV0<String>(ResponseStrEnum.ADD_ORDER_FAILED,"",ResponseStrEnum.ADD_ORDER_FAILED.getMsg());
+        }
+        ProductEntity productEntity = new ProductEntity();
+        productEntity.setStatus(new Byte("1"));
+        //修改商品状态
+        if (productMapper.update(productEntity,new UpdateWrapper<ProductEntity>().eq("open_id",openId).eq("id",orderEntity.getProductId())) > 1){
+            logger.error("OrderService::addOrder::update--->{}"," > 1");
             return new ResponseV0<String>(ResponseStrEnum.ADD_ORDER_FAILED,"",ResponseStrEnum.ADD_ORDER_FAILED.getMsg());
         }
         return new ResponseV0<String>(ResponseStrEnum.ADD_ORDER_SUCCESS,"",ResponseStrEnum.ADD_ORDER_SUCCESS.getMsg());

@@ -2,19 +2,14 @@ package com.lyy.secondhand.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lyy.secondhand.common.*;
 import com.lyy.secondhand.cusexception.EntityNullFieldException;
 import com.lyy.secondhand.dto.Product;
 import com.lyy.secondhand.dto.ProductItem;
-import com.lyy.secondhand.entity.ImageEntity;
-import com.lyy.secondhand.entity.ProductEntity;
-import com.lyy.secondhand.entity.StarEntity;
-import com.lyy.secondhand.entity.UserEntity;
-import com.lyy.secondhand.mapper.ImageMapper;
-import com.lyy.secondhand.mapper.ProductMapper;
-import com.lyy.secondhand.mapper.StarMapper;
-import com.lyy.secondhand.mapper.UserMapper;
+import com.lyy.secondhand.entity.*;
+import com.lyy.secondhand.mapper.*;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -60,6 +56,9 @@ public class ProductService {
 
     @Autowired
     StarMapper starMapper;
+
+    @Autowired
+    OrderMapper orderMapper;
 
     //只接受jpge和jpg文件
     private final Set<String> fileNameSet = new HashSet<>(Arrays.asList(MIME_JPEG,MIME_JPG,MIME_PNG));
@@ -173,7 +172,8 @@ public class ProductService {
         String openId = redisUtil.get(token);
         //首次更新收藏，执行插入操作
         //action为1时收藏，0取消收藏
-        if (starMapper.selectStarByOpenIdNProductId(openId,productId) == 0){
+        int count = starMapper.selectCount(new QueryWrapper<StarEntity>().eq("open_id",openId).eq("product_id",productId));
+        if (count == 0){
             if (action == 1){
                 StarEntity starEntity = new StarEntity();
                 starEntity.setOpenId(openId);
@@ -198,6 +198,110 @@ public class ProductService {
         }
         return new ResponseV0<>(ResponseStrEnum.STAR_FAILED,"",ResponseStrEnum.STAR_FAILED.getMsg());
 
+    }
+
+    //获取用户已发布商品列表
+    public List<ProductEntity> getPublishedList(String token){
+        String openId = redisUtil.get(token);
+        if (!openId.equals("")){
+            List<ProductEntity> productEntities = productMapper.selectList(new QueryWrapper<ProductEntity>().eq("open_id",openId).eq("status",0));
+            Set<String> whiteList = new HashSet<String>(){{
+                add("openId");
+            }};
+            try{
+                for (ProductEntity productEntity:productEntities){
+                    EntityUtil.fieldFilter(productEntity,whiteList);
+                }
+            }catch (IllegalAccessException e){
+                logger.error("ProductService::getPublisedList-->{}",e.getMessage());
+            }
+            return productEntities;
+        }
+        return null;
+    }
+
+    //获取用户已购买的商品列表
+    public List<ProductEntity> getBoughtList(String token){
+        String openId = redisUtil.get(token);
+        if (!openId.equals("")){
+            List<OrderEntity> orderEntities = orderMapper.selectList(new QueryWrapper<OrderEntity>().eq("buyer_open_id",openId).eq("status",1).select("product_id"));
+            List<Long> productIds= orderEntities.stream().map(OrderEntity::getProductId).collect(Collectors.toList());
+            List<ProductEntity> productEntities = productMapper.selectBatchIds(productIds);
+            //敏感字段设置为null
+            Set<String> whiteList = new HashSet<String>(){{
+                add("openId");
+            }};
+            try{
+                for (ProductEntity productEntity:productEntities){
+                    EntityUtil.fieldFilter(productEntity,whiteList);
+                }
+            }catch (IllegalAccessException e){
+                logger.error("ProductService::getBoughtList-->{}",e.getMessage());
+            }
+            return productEntities;
+        }
+        return null;
+    }
+
+    //获取用户卖出的商品列表
+    public List<ProductEntity> getSoldList(String token){
+        String openId = redisUtil.get(token);
+        if (!openId.equals("")){
+            List<ProductEntity> productEntities = productMapper.selectList(new QueryWrapper<ProductEntity>().eq("open_id",openId).eq("status",1));
+            //敏感字段设置为null
+            Set<String> whiteList = new HashSet<String>(){{
+                add("openId");
+            }};
+            try{
+                for (ProductEntity productEntity:productEntities){
+                    EntityUtil.fieldFilter(productEntity,whiteList);
+                }
+            }catch (IllegalAccessException e){
+                logger.error("ProductService::getBoughtList-->{}",e.getMessage());
+            }
+            return productEntities;
+        }
+        return null;
+    }
+
+    //获取用户收藏的商品列表
+    public List<ProductEntity> getStarList(String token){
+        String openId = redisUtil.get(token);
+        if (!openId.equals("")){
+            List<StarEntity> starEntities = starMapper.selectList(new QueryWrapper<StarEntity>().eq("open_id",openId).eq("status",1).select("product_id"));
+            List<Long> productIdList = starEntities.stream().map(StarEntity::getProductId).collect(Collectors.toList());
+            List<ProductEntity> productEntities = productMapper.selectBatchIds(productIdList).stream().filter(productEntity -> productEntity.getStatus() == 0).collect(Collectors.toList());
+            //敏感字段设置为null
+            Set<String> whiteList = new HashSet<String>(){{
+                add("openId");
+            }};
+            try{
+                for (ProductEntity productEntity:productEntities){
+                    EntityUtil.fieldFilter(productEntity,whiteList);
+                }
+            }catch (IllegalAccessException e){
+                logger.error("ProductService::getBoughtList-->{}",e.getMessage());
+            }
+            return productEntities;
+        }
+        return null;
+
+    }
+
+    //取消发布
+    public ResponseV0<String> unPublish(Long productId){
+        ProductEntity productEntity = new ProductEntity();
+        productEntity.setId(productId);
+        productEntity.setStatus(new Byte("3"));
+        int result = productMapper.updateById(productEntity);
+        if (result > 1){
+            logger.error("ProductService::unPublish-->{}","update > 1");
+            return new ResponseV0<>(ResponseStrEnum.UNPUBLISHED_FAILD,"",ResponseStrEnum.UNPUBLISHED_FAILD.getMsg());
+        }
+        if (result == 1){
+            return new ResponseV0<>(ResponseStrEnum.UNPUBLISHED_SUCCESS,"",ResponseStrEnum.UNPUBLISHED_SUCCESS.getMsg());
+        }
+        return new ResponseV0<>(ResponseStrEnum.UNPUBLISHED_FAILD,"",ResponseStrEnum.UNPUBLISHED_FAILD.getMsg());
     }
 
 }
