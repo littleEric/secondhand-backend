@@ -30,7 +30,7 @@ public class UserService {
 
     //获取用户头像和昵称
     public JSONObject getUserInfo(String token){
-        if (redisUtil.getExpire(token)== -1){           //token不存在或者已过期
+        if (redisUtil.getExpire(token)!= -2){
             String openId = redisUtil.get(token);
             UserEntity userEntity = userMapper.selectOne(new QueryWrapper<UserEntity>().eq("open_id",openId));
             JSONObject userInfo = new JSONObject();
@@ -38,7 +38,18 @@ public class UserService {
             userInfo.put("name",userEntity.getName());
             return userInfo;
         }
-        logger.error("UserService::getUserInfo--->{}","非法访问");
+        logger.error("UserService::getUserInfo--->{}","非法访问");  //token不存在或者已过期
         return null;
     }
+
+    //根据open_id获取用户头像和昵称
+    public JSONObject getUserInfoByOpenId(String openId){
+        UserEntity userEntity = userMapper.selectOne(new QueryWrapper<UserEntity>().eq("open_id",openId));
+        JSONObject userInfo = new JSONObject();
+        userInfo.put("avatarUrl",userEntity.getAvatarUrl());
+        userInfo.put("name",userEntity.getName());
+        return userInfo;
+    }
+
+
 }

@@ -270,6 +270,9 @@ public class ProductService {
         if (!openId.equals("")){
             List<StarEntity> starEntities = starMapper.selectList(new QueryWrapper<StarEntity>().eq("open_id",openId).eq("status",1).select("product_id"));
             List<Long> productIdList = starEntities.stream().map(StarEntity::getProductId).collect(Collectors.toList());
+            if (productIdList.size() == 0){
+                return new ArrayList<>();
+            }
             List<ProductEntity> productEntities = productMapper.selectBatchIds(productIdList).stream().filter(productEntity -> productEntity.getStatus() == 0).collect(Collectors.toList());
             //敏感字段设置为null
             Set<String> whiteList = new HashSet<String>(){{

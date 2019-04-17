@@ -45,7 +45,6 @@ public class AuthTokenInterceptor implements HandlerInterceptor {
                 throw new TokenErrorException("token不存在");
             }
         }
-
         return true;
     }
 }

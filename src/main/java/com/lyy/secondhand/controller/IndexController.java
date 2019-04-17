@@ -35,6 +35,7 @@ public class IndexController {
     @AuthToken
     public List<ProductEntity> getProductList(@RequestBody IndexRequest indexRequest, HttpServletRequest request) {
         List<ProductEntity> result = indexService.getProductByCateBrand(indexRequest);
+        //过滤返回值中的敏感字段
         for (ProductEntity productEntity : result) {
             try {
                 EntityUtil.filterProductItem(productEntity.getUserEntity());

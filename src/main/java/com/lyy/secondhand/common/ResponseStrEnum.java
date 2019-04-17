@@ -20,7 +20,8 @@ public enum ResponseStrEnum {
     ADD_ORDER_SUCCESS("添加订单成功"),
     ADD_ORDER_FAILED("添加订单失败"),
     UNPUBLISHED_SUCCESS("取消发布成功"),
-    UNPUBLISHED_FAILD("取消发布失败");
+    UNPUBLISHED_FAILD("取消发布失败"),
+    NULL_POINTER_INFO("服务器异常"),;
 
     private final String type;
 

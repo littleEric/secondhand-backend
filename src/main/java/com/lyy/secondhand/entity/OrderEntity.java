@@ -1,6 +1,7 @@
 package com.lyy.secondhand.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -19,6 +20,13 @@ public class OrderEntity extends BaseEntity {
 
     private Integer status;
     private Long addressId;
+
+    @TableField(exist = false)
+    private LocationEntity locationEntity;
+
+    @TableField(exist = false)
+    private DomAreaEntity domAreaEntity;
+
 
     public Long getId() {
         return id;
@@ -58,6 +66,22 @@ public class OrderEntity extends BaseEntity {
 
     public void setAddressId(Long addressId) {
         this.addressId = addressId;
+    }
+
+    public LocationEntity getLocationEntity() {
+        return locationEntity;
+    }
+
+    public void setLocationEntity(LocationEntity locationEntity) {
+        this.locationEntity = locationEntity;
+    }
+
+    public DomAreaEntity getDomAreaEntity() {
+        return domAreaEntity;
+    }
+
+    public void setDomAreaEntity(DomAreaEntity domAreaEntity) {
+        this.domAreaEntity = domAreaEntity;
     }
 
     @Override

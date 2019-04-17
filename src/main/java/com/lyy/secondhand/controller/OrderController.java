@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: ericlai
@@ -59,5 +60,13 @@ public class OrderController {
     public ResponseV0<String> addOrder(@RequestBody OrderEntity orderEntity, HttpServletRequest request){
         String token = request.getHeader("token");
         return orderService.addOrder(orderEntity,token);
+    }
+
+    //查询订单详情
+    @RequestMapping(value = "/order/detail",method = RequestMethod.POST)
+    @AuthToken
+    public Map<String,Object> getOrderDetails(HttpServletRequest httpServletRequest){
+        String productId = httpServletRequest.getParameter("productId");
+        return orderService.getOrderDetails(productId);
     }
 }

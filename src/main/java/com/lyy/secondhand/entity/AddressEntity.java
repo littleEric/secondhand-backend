@@ -1,6 +1,7 @@
 package com.lyy.secondhand.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -21,6 +22,12 @@ public class AddressEntity {
     private Integer ifDefault;
     private String name;
     private String phoneNum;
+
+    @TableField(exist = false)
+    private String location;
+
+    @TableField(exist = false)
+    private String domArea;
 
     public Long getId() {
         return id;
@@ -92,6 +99,22 @@ public class AddressEntity {
 
     public void setPhoneNum(String phoneNum) {
         this.phoneNum = phoneNum;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getDomArea() {
+        return domArea;
+    }
+
+    public void setDomArea(String domArea) {
+        this.domArea = domArea;
     }
 
     @Override

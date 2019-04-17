@@ -25,7 +25,6 @@ public class IndexService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
     @Autowired
     ProductMapper productMapper;
 

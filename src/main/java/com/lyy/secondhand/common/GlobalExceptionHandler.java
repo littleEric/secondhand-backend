@@ -34,6 +34,9 @@ public class GlobalExceptionHandler {
         logger.error(e.getMessage());
         return new ResponseV0<String>(ResponseStrEnum.CODE_ERROR,"",e.getMessage());
     }
-
-
+    @ExceptionHandler(value = NullPointerException.class)
+    public ResponseV0 handleNullPointerException(Exception e){
+        logger.error(e.getMessage());
+        return new ResponseV0<String>(ResponseStrEnum.NULL_POINTER_INFO,"",ResponseStrEnum.NULL_POINTER_INFO.getMsg());
+    }
 }

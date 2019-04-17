@@ -60,7 +60,8 @@ public class WxLoginService {
 
     private JSONObject get3rdSession(String openID){
         String _3rd_session = UUID.randomUUID().toString().replaceAll("-","");
-        redisUtil.setEx(_3rd_session,openID,2,TimeUnit.DAYS);
+        //token在redis中保存30天
+        redisUtil.setEx(_3rd_session,openID,30,TimeUnit.DAYS);
         JSONObject sessionJson = new JSONObject();
         sessionJson.put("_3rd_session",_3rd_session);
         return sessionJson;
