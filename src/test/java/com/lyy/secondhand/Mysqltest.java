@@ -42,7 +42,7 @@ public class Mysqltest {
 
     @Test
     public void testSelectItemById(){
-        System.out.println(productMapper.selectItemById(new Long(1)));
+        System.out.println(productMapper.selectItemById(new Long(1),""));
     }
 
     @Test

@@ -140,7 +140,7 @@
 
     <appender name="sql"  class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${logbase}sql.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>sql.%d{yyyy-MM-dd}.log</FileNamePattern>
             <MaxHistory>30</MaxHistory>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -155,6 +155,7 @@
     <springProfile name="dev">
         <root level="info">
             <appender-ref ref="CONSOLE"></appender-ref>
+            <appender-ref ref="sql"></appender-ref>
         </root>
         <logger name="com.lyy.secondhand.mapper" level="DEBUG">
             <appender-ref ref="CONSOLE"></appender-ref>

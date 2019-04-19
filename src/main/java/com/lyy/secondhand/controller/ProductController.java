@@ -41,7 +41,8 @@ public class ProductController {
     public ProductItem getItemInfo(HttpServletRequest request){
         Long productId = Long.parseLong(request.getParameter("id"));
         System.out.println("ProductController::getItemInfo---->>"+productId);
-        return productService.selectItem(productId);
+        String token = request.getHeader("token");
+        return productService.selectItem(productId,token);
     }
 
     @RequestMapping(value = "/updateStar",method = RequestMethod.POST)

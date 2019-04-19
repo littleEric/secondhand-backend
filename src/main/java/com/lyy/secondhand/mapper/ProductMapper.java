@@ -21,7 +21,7 @@ public interface ProductMapper extends BaseMapper<ProductEntity> {
 
     List<ProductEntity> selectByCat(@Param("category")String category);
 
-    List<ProductItem> selectItemById(@Param("productId") Long id);
+    List<ProductItem> selectItemById(@Param("productId") Long id,@Param("openId") String openId);
 
     
 }

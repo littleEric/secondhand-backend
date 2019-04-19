@@ -20,9 +20,9 @@
         <result column="price" property="price"/>
         <result column="detail" property="detail"/>
         <result column="cover_img_name" property="coverUrl"/>
+        <result column="cc" property="ifStar"/>
 
         <association property="imgUrlList" select="com.lyy.secondhand.mapper.ImageMapper.selectByProductId" column="id"></association>
-        <association property="ifStar" select="com.lyy.secondhand.mapper.StarMapper.selectStarByOpenIdNProductId" column="{openId=open_id,productId=id}"></association>
     </resultMap>
 
     <insert id="insertProduct" parameterType="com.lyy.secondhand.entity.ProductEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -31,15 +31,15 @@
     </insert>
 
     <select id="selectByCatBnd" resultMap="selectProductListResultMap">
-        select * from `product` where `category`=#{category} and `brand`=#{brand} and `status`= 0
+        select * from `product` where `category`=#{category} and `brand`=#{brand} and `status`= 0 ORDER BY id
     </select>
 
     <select id="selectByCat" resultMap="selectProductListResultMap">
-        select * from `product` where `category`=#{category} and `status`=0
+        select * from `product` where `category`=#{category} and `status`=0 ORDER BY id
     </select>
 
     <select id="selectItemById" resultMap="selectItemByIdResultMap">
-        SELECT u.avatar_url,u.`name`,p.id,p.title,p.location,p.price,p.detail,p.cover_img_name,p.open_id from `user` u,product p WHERE	p.`status`=0 and p.open_id = u.open_id and p.id = #{productId}
+        SELECT u.avatar_url,u.`name`,p.id,p.title,p.location,p.price,p.detail,p.cover_img_name,p.open_id,s.cc from `user` u,product p,(SELECT count(*) cc from `star` where  `open_id`=#{openId} and `product_id`=#{productId} and `status`=1) s WHERE	p.`status`=0 and p.open_id = u.open_id and p.id = #{productId}
     </select>
 
 

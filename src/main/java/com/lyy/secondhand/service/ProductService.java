@@ -157,8 +157,9 @@ public class ProductService {
     }
 
     //根据商品id获取item信息
-    public ProductItem selectItem(Long id){
-        List<ProductItem> result = productMapper.selectItemById(id);
+    public ProductItem selectItem(Long id,String token){
+        String openId = redisUtil.get(token);
+        List<ProductItem> result = productMapper.selectItemById(id,openId);
         if (!(result.size() == 1)){
             logger.error("ProductService::selectItem::result.size ----->> !== 1");
             return null;
@@ -225,6 +226,10 @@ public class ProductService {
         String openId = redisUtil.get(token);
         if (!openId.equals("")){
             List<OrderEntity> orderEntities = orderMapper.selectList(new QueryWrapper<OrderEntity>().eq("buyer_open_id",openId).eq("status",1).select("product_id"));
+            //查无订单数据，返回
+            if (orderEntities.size() == 0){
+                return null;
+            }
             List<Long> productIds= orderEntities.stream().map(OrderEntity::getProductId).collect(Collectors.toList());
             List<ProductEntity> productEntities = productMapper.selectBatchIds(productIds);
             //敏感字段设置为null
